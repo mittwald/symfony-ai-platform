@@ -1,6 +1,6 @@
 {
   "name": "mittwald/symfony-ai-platform",
-  "description": "Allows to use Mittwald's AI Platform in your Symfony AI project.",
+  "description": "Allows to use mittwald's AI Platform in your Symfony AI project.",
   "license": "MIT",
   "type": "symfony-ai-platform",
   "keywords": [

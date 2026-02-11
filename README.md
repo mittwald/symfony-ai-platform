@@ -1,6 +1,6 @@
 # mittwald/symfony-ai-platform
 
-Symfony AI platform bridge for [Mittwald's AI Hosting API](https://llm.aihosting.mittwald.de).
+Symfony AI platform bridge for [mittwald's AI Hosting API](https://llm.aihosting.mittwald.de).
 
 ## Installation
 
