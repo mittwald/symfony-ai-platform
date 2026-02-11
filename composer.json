@@ -1,0 +1,32 @@
+{
+  "name": "mittwald/symfony-ai-platform",
+  "description": "Allows to use Mittwald's AI Platform in your Symfony AI project.",
+  "license": "MIT",
+  "type": "symfony-ai-platform",
+  "keywords": [
+    "ai",
+    "bridge",
+    "platform",
+    "openai",
+    "mistral",
+    "devstral",
+    "qwen3",
+    "whisper"
+  ],
+  "homepage": "https://github.com/mittwald/symfony-ai-platform",
+  "autoload": {
+    "psr-4": {
+      "Mittwald\\Symfony\\AI\\Platform\\Bridge\\": ""
+    },
+    "exclude-from-classmap": [
+      "/vendor/"
+    ]
+  },
+  "require": {
+    "php": ">=8.2",
+    "symfony/ai-platform": "^0.3",
+    "symfony/http-client": "^7.3|^8.0",
+    "symfony/mime": "^7.3|^8.0"
+  },
+  "minimum-stability": "dev"
+}
