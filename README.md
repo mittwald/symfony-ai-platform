@@ -43,6 +43,8 @@ echo $result->asText();
 | `gpt-oss-120b` | Text, Tool Calling, Streaming |
 | `Ministral-3-14B-Instruct-2512` | Text, Image, Tool Calling, Streaming |
 | `Devstral-Small-2-24B-Instruct-2512` | Text, Image, Tool Calling, Streaming |
+| `Qwen3.5-122B-FP8` | Text, Tool Calling, Streaming |
+| `Qwen3.6-35B-FP8` | Text, Tool Calling, Streaming |
 | `Qwen3-Embedding-8B` | Embeddings |
 | `Whisper-Large-V3-Turbo` | Speech-to-Text |
 
