@@ -16,7 +16,7 @@
   "homepage": "https://github.com/mittwald/symfony-ai-platform",
   "autoload": {
     "psr-4": {
-      "Mittwald\\Symfony\\AI\\Platform\\Bridge\\": ""
+      "Mittwald\\Symfony\\AI\\Platform\\Bridge\\": "src"
     },
     "exclude-from-classmap": [
       "/vendor/"
