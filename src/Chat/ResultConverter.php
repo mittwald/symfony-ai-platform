@@ -48,7 +48,7 @@ final class ResultConverter implements ResultConverterInterface
         return new TextResult($message['content'] ?? '');
     }
 
-    public function getTokenUsageExtractor(): ?TokenUsageExtractorInterface
+    public function getTokenUsageExtractor(): TokenUsageExtractorInterface
     {
         return $this->tokenUsageExtractor;
     }
