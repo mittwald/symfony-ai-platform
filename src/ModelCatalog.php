@@ -45,7 +45,7 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::TOOL_CALLING,
                 ],
             ],
-            'Qwen3.5-122B-FP8' => [
+            'Qwen3.5-122B-A10B-FP8' => [
                 'class' => ChatModel::class,
                 'capabilities' => [
                     Capability::INPUT_MESSAGES,
@@ -56,7 +56,7 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::TOOL_CALLING,
                 ],
             ],
-            'Qwen3.6-35B-FP8' => [
+            'Qwen3.6-35B-A3B-FP8' => [
                 'class' => ChatModel::class,
                 'capabilities' => [
                     Capability::INPUT_MESSAGES,
