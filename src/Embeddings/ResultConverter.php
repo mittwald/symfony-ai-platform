@@ -34,7 +34,7 @@ final class ResultConverter implements ResultConverterInterface
             $vectors[] = new Vector($embedding['embedding']);
         }
 
-        return new VectorResult(...$vectors);
+        return new VectorResult($vectors);
     }
 
     public function getTokenUsageExtractor(): TokenUsageExtractorInterface

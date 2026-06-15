@@ -8,9 +8,10 @@ use Mittwald\Symfony\AI\Platform\Bridge\Embeddings\ModelClient as EmbeddingsMode
 use Mittwald\Symfony\AI\Platform\Bridge\Embeddings\ResultConverter as EmbeddingsResultConverter;
 use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ModelClient as WhisperModelClient;
 use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ResultConverter as WhisperResultConverter;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\AI\Platform\Contract;
 use Symfony\AI\Platform\Platform;
+use Symfony\AI\Platform\Provider;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -37,13 +38,16 @@ final class PlatformFactory
             new WhisperResultConverter(),
         ];
 
-        return new Platform(
+        $provider = new Provider(
+            'mittwald',
             $modelClients,
             $resultConverters,
             $modelCatalog,
             Contract::create(),
             $dispatcher,
         );
+
+        return new Platform([$provider], eventDispatcher: $dispatcher);
     }
 
     private static function configureHttpClient(HttpClientInterface $httpClient, string $apiKey): HttpClientInterface

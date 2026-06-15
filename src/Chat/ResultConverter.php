@@ -96,7 +96,7 @@ final class ResultConverter implements ResultConverterInterface
             );
         }
 
-        return new ToolCallResult(...$calls);
+        return new ToolCallResult($calls);
     }
 
     private function createStreamGenerator(RawResultInterface $result): \Generator
