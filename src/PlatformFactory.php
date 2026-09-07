@@ -8,6 +8,8 @@ use Mittwald\Symfony\AI\Platform\Bridge\Embeddings\ModelClient as EmbeddingsMode
 use Mittwald\Symfony\AI\Platform\Bridge\Embeddings\ResultConverter as EmbeddingsResultConverter;
 use Mittwald\Symfony\AI\Platform\Bridge\Reranking\ModelClient as RerankingModelClient;
 use Mittwald\Symfony\AI\Platform\Bridge\Reranking\ResultConverter as RerankingResultConverter;
+use Mittwald\Symfony\AI\Platform\Bridge\TextToSpeech\ModelClient as TextToSpeechModelClient;
+use Mittwald\Symfony\AI\Platform\Bridge\TextToSpeech\ResultConverter as TextToSpeechResultConverter;
 use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ModelClient as WhisperModelClient;
 use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ResultConverter as WhisperResultConverter;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -33,6 +35,7 @@ final class PlatformFactory
             new EmbeddingsModelClient($httpClient),
             new WhisperModelClient($httpClient),
             new RerankingModelClient($httpClient),
+            new TextToSpeechModelClient($httpClient),
         ];
 
         $resultConverters = [
@@ -40,6 +43,7 @@ final class PlatformFactory
             new EmbeddingsResultConverter(),
             new WhisperResultConverter(),
             new RerankingResultConverter(),
+            new TextToSpeechResultConverter(),
         ];
 
         $provider = new Provider(
