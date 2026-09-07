@@ -26,12 +26,14 @@ factory convention, such as TYPO3's `b13/aim`).
 > `PlatformFactory` to `Factory` in bridge release 0.8.
 
 Both methods accept the same optional overrides sibling Symfony AI bridges
-expose (all default to the values shown above): `$httpClient`, `$modelCatalog`,
-`$dispatcher`, `$contract`, `$name`, and `$baseUrl`; `createPlatform()`
-additionally accepts `$modelRouter`.
+expose: `$httpClient`, `$modelCatalog`, `$dispatcher`, `$contract`, `$name`
+(default `'mittwald'`), and `$baseUrl` (default
+`'https://llm.aihosting.mittwald.de'`); `createPlatform()` additionally
+accepts `$modelRouter`. `$name` and `$baseUrl` are there for cases like routing
+through a self-hosted proxy in front of the mittwald API:
 
 ```php
-$provider = Factory::createProvider('your-api-key', name: 'mittwald-eu', baseUrl: 'https://llm.eu.aihosting.mittwald.de');
+$provider = Factory::createProvider('your-api-key', baseUrl: 'https://your-proxy.example/mittwald-ai');
 ```
 
 API errors are translated into the shared platform exceptions
