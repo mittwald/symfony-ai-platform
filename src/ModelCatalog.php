@@ -21,6 +21,7 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::OUTPUT_TEXT,
                     Capability::OUTPUT_STREAMING,
                     Capability::TOOL_CALLING,
+                    Capability::THINKING,
                 ],
             ],
             'Ministral-3-14B-Instruct-2512' => [
@@ -87,6 +88,7 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::INPUT_MESSAGES,
                     Capability::INPUT_TEXT,
                     Capability::INPUT_IMAGE,
+                    Capability::INPUT_PDF,
                     Capability::OUTPUT_TEXT,
                 ],
             ],

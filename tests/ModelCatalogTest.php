@@ -61,7 +61,17 @@ final class ModelCatalogTest extends TestCase
         $catalog = new ModelCatalog();
 
         self::assertTrue($catalog->getModel('Qwen3.5-122B-A10B-FP8')->supports(Capability::THINKING));
-        self::assertFalse($catalog->getModel('gpt-oss-120b')->supports(Capability::THINKING));
+        self::assertTrue($catalog->getModel('gpt-oss-120b')->supports(Capability::THINKING));
+    }
+
+    public function testGlmOcrSupportsPdfInput(): void
+    {
+        $catalog = new ModelCatalog();
+
+        $model = $catalog->getModel('GLM-OCR');
+
+        self::assertTrue($model->supports(Capability::INPUT_PDF));
+        self::assertFalse($model->supports(Capability::TOOL_CALLING));
     }
 
     public function testEmbeddingModelSupportsEmbeddingsCapability(): void
