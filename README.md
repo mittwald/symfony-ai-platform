@@ -86,6 +86,14 @@ $result->asFile('/path/to/output.mp3');
 | `Qwen3-VL-Reranker-2B` | Text, Image, Reranking |
 | `Qwen3-TTS-12Hz-1.7B-CustomVoice` | Text-to-Speech |
 
+## Development
+
+```bash
+composer install
+composer run check   # static analysis (phpstan)
+composer run test    # PHPUnit test suite
+```
+
 ## License
 
 MIT

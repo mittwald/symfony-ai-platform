@@ -9,6 +9,7 @@ use Symfony\AI\Platform\Exception\RateLimitExceededException;
 use Symfony\AI\Platform\Model;
 use Symfony\AI\Platform\Result\RawResultInterface;
 use Symfony\AI\Platform\Result\ResultInterface;
+use Symfony\AI\Platform\Result\Stream\Delta\TextDelta;
 use Symfony\AI\Platform\Result\StreamResult;
 use Symfony\AI\Platform\Result\TextResult;
 use Symfony\AI\Platform\Result\ToolCall;
@@ -106,7 +107,7 @@ final class ResultConverter implements ResultConverterInterface
             $delta = $choice['delta'] ?? [];
 
             if (isset($delta['content']) && '' !== $delta['content']) {
-                yield $delta['content'];
+                yield new TextDelta($delta['content']);
             }
         }
     }
