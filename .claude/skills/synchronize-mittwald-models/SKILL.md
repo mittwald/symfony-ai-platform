@@ -10,15 +10,6 @@ Bring `ModelCatalog.php` back in sync with what mittwald AI Hosting actually
 offers, and prove the result. This is an audit-and-reconcile workflow: it ends
 with a report of what matches, what drifted, and what was changed.
 
-This skill (and `add-model`) is a port of the same-named skills in
-[`ai_provider_mittwald`](https://git.drupalcode.org/project/ai_provider_mittwald),
-mittwald's Drupal AI provider. That module's model routing is regex-based and
-carries Drupal-specific concerns (persisted site config, update hooks,
-`api_defaults.yml`). This library routes by exact catalog key and is
-stateless, so several of that module's hazards do not apply here — see
-`references/model-touchpoints.md` for exactly what carried over and what
-didn't.
-
 **Never guess a model ID, an endpoint, or a capability.** Every claim in this
 repo has to trace back to the mittwald documentation or to an observed API
 response. A guessed model ID that does not exist matches nothing in the
@@ -147,10 +138,9 @@ Follow `references/verifying.md`: `scripts/verify_catalog.php` first, then
 `verify_catalog.php` to the lineup fetched in Step 1 before reading its
 output — that is what turns it from a static check into an audit.
 
-Unlike `ai_provider_mittwald`, a clean `phpstan analyse` here is a real
-signal — `symfony/ai-platform` resolves as a normal dependency, there is no
-equivalent of the ~60 pre-existing `class.notFound` noise that repo has to
-route around.
+A clean `phpstan analyse` here is a real signal — `symfony/ai-platform`
+resolves as a normal, fully-typed dependency, so there is no pre-existing
+noise to route around.
 
 ## Step 6: Report
 
@@ -186,10 +176,10 @@ rather than trusting this table** — it is a baseline, not a source.
 Supported endpoints documented at the same date: `/v1/models`,
 `/v1/chat/completions`, `/v1/completions`, `/v1/responses` (experimental,
 OpenAI Responses API shape), `/v1/embeddings`, `/v1/audio/transcriptions`,
-`/v1/audio/speech`. `/v1/rerank` was not listed on that page in the Drupal
-skill's own snapshot despite `Qwen3-VL-Reranker-2B` being offered — treat
-rerank support as needing the Step 2 probe before relying on it, not as
-confirmed by this table.
+`/v1/audio/speech`. `/v1/rerank` was not on that page despite
+`Qwen3-VL-Reranker-2B` being offered in the model table — treat rerank support
+as needing the Step 2 probe before relying on it, not as confirmed by this
+table.
 
 Known drift observed at that date, verified with `verify_catalog.php` (not
 guessed):
@@ -199,8 +189,9 @@ guessed):
   lowercase upstream ID) are offered upstream but have no `ModelCatalog.php`
   entry.
 - `Devstral-Small-2-24B-Instruct-2512` is in `ModelCatalog.php` but does not
-  appear in the current upstream table — likely retired, same family as the
-  `Devstral-Small-2507` the Drupal module already had to remove.
+  appear in the current upstream table — possibly retired. Confirm with
+  mittwald or a fresh probe before removing it; absence from one fetch of the
+  table is a signal, not confirmation.
 - `Qwen3.5-122B-A10B-FP8` and `Qwen3.6-35B-A3B-FP8` are documented as
   "Chat + reasoning + vision" but their catalog entries carry no
   `Capability::THINKING`.

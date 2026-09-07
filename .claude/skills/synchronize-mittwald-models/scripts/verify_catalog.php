@@ -5,18 +5,16 @@
  * catalogued model, and reports which ModelClient (if any) would actually
  * handle it in PlatformFactory::create().
  *
- * This merges the two concerns the Drupal counterpart (ai_provider_mittwald)
- * needed two separate scripts for. There the model filters were regexes
- * parsed out of source, so class-declaration fatals and filter drift were
- * genuinely different failure modes. Here the catalog is a plain PHP array
- * keyed by exact model name, so both concerns collapse into one pass:
- * instantiation errors surface immediately (no reflection tricks needed —
- * PHP throws), and "no client claims this model class" is just another
- * property of the same instantiated Model to check.
+ * The catalog is a plain PHP array keyed by exact model name, so a single
+ * pass over getModels() covers both instantiation errors (PHP throws
+ * immediately on a bad `class` value) and routing gaps ("no client claims
+ * this model class" is just another property of the same instantiated
+ * Model to check).
  *
  * Update $current and $retired from the verbatim mittwald model table
- * before trusting a run — they are maintained by hand, same as their
- * counterparts in ai_provider_mittwald's verify_filters.php.
+ * before trusting a run — they are maintained by hand. Only add an entry
+ * to $retired once its absence upstream is independently confirmed; do
+ * not seed it from assumptions about model history.
  *
  * Usage:
  * php .claude/skills/synchronize-mittwald-models/scripts/verify_catalog.php
@@ -46,12 +44,11 @@ $current = [
     'Qwen3-TTS-12Hz-1.7B-CustomVoice',
 ];
 
-// Models withdrawn upstream. These must be absent from ModelCatalog entirely.
+// Models absent from the current model table above and therefore suspected
+// retired. Confirm with mittwald (or a fresh fetch) before relying on this —
+// absence from one fetch is a signal, not proof of withdrawal. These should
+// end up absent from ModelCatalog entirely once confirmed.
 $retired = [
-    'Mistral-Small-3.2-24B-Instruct',
-    'Mistral-Medium-3.5-128B',
-    'qwen3-coder-30b',
-    'Devstral-Small-2507',
     'Devstral-Small-2-24B-Instruct-2512',
 ];
 

@@ -11,13 +11,6 @@ the targeted counterpart to `synchronize-mittwald-models`: that skill
 reconciles the whole lineup and handles removals; this one adds a single known
 model.
 
-This is a port of the same-named skill in
-[`ai_provider_mittwald`](https://git.drupalcode.org/project/ai_provider_mittwald),
-mittwald's Drupal AI provider — adapted for a stateless composer library with
-an exact-match catalog instead of a regex-filtered Drupal plugin. See
-`.claude/skills/synchronize-mittwald-models/references/model-touchpoints.md`
-for what changed in the port.
-
 **Never guess a model ID or a capability.** A model ID that does not exist
 throws `ModelNotFoundException` the first time anyone calls it — silent right
 up until then, since nothing at catalog-definition time checks it against
@@ -37,11 +30,9 @@ and casing; `AbstractModelCatalog::getModel()` matches the catalog key
 exactly, so a casing mismatch doesn't error, it just means the string a caller
 has to pass differs from what mittwald itself documents.
 
-If the model is not in that table, stop. Adding a speculative model is how
-`Mistral-Medium-3.5-128B` ended up in the Drupal provider and had to be
-removed again — the same risk applies here, it just fails differently (a
-`ModelNotFoundException` at call time instead of the request quietly matching
-zero of a regex).
+If the model is not in that table, stop. A speculatively added model doesn't
+fail loudly here — `ModelNotFoundException` only fires the first time someone
+actually calls it, which can be long after the PR merged.
 
 If the model implies an operation type this bridge does not implement yet (a
 new endpoint — rerank, text-to-speech, OCR — rather than a new chat/
@@ -93,9 +84,8 @@ first, otherwise its report won't check it. Confirm it appears with exactly
 the class and capabilities Step 2 established, that exactly one `ModelClient`
 supports it, and that no other model's row changed.
 
-`vendor/bin/phpstan analyse` is a real signal in this repo (unlike the Drupal
-module's phpstan setup) — a new error here is worth explaining, not filtering
-past.
+`vendor/bin/phpstan analyse` is a clean, real signal in this repo — a new
+error here is worth explaining, not filtering past.
 
 ## Step 5: Commit
 

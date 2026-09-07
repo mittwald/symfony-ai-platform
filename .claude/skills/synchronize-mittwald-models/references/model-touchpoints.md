@@ -26,26 +26,24 @@ and in `composer.json`'s `keywords` too.
 | `README.md` | the model table (name + capabilities column), the PHP usage examples, and the "Supported Models" prose |
 | `composer.json` `keywords` | family names mentioned there (`mistral`, `devstral`, `qwen3`, `whisper`, …) |
 
-There is **no equivalent of `definitions/api_defaults.yml`, install hooks, or a
-hardcoded rate-limit-probe model** — those are Drupal-specific concerns tied to
-persisted site configuration and a plugin-setup flow. This library is stateless:
-a caller passes a model name string to `Platform::invoke()` on every call, there
-is nothing to migrate, and there is no default model baked into the factory.
-Do not go looking for those touchpoints here; see "Retiring a model" below for
-what removal actually implies in this architecture.
+There is **no configuration file, migration mechanism, or hardcoded default
+model to keep in sync** — this library is stateless. A caller passes a model
+name string to `Platform::invoke()` on every call, there is nothing persisted
+to migrate, and `PlatformFactory::create()` bakes in no default model for any
+operation type. See "Retiring a model" below for what removal actually implies
+in this architecture.
 
 ## Routing a model to an operation type
 
-Unlike the Drupal provider, there is **no regex filter and no prefix-matching
-hazard** — `AbstractModelCatalog::getModel()` looks up the catalog key by exact
-string match (with an optional `base:variant` fallback and `?query=string`
-option parsing baked into the base class; see
+There is **no regex filter and no prefix-matching hazard** —
+`AbstractModelCatalog::getModel()` looks up the catalog key by exact string
+match (with an optional `base:variant` fallback and `?query=string` option
+parsing baked into the base class; see
 `vendor/symfony/ai-platform/src/ModelCatalog/AbstractModelCatalog.php`). A typo
 in a catalog key just produces a `ModelNotFoundException` — it cannot silently
 steal another model's traffic the way an over-broad regex can.
 
-What *can* still go wrong, and is the direct analogue of the Drupal over-match
-hazard:
+What *can* still go wrong:
 
 - **Copy-pasting capabilities from a sibling model in the same family.**
   `Qwen3.5-0.8B` is text-only while `Qwen3.5-122B-A10B-FP8` is vision- and
@@ -55,10 +53,9 @@ hazard:
 - **A `class` value that no `ModelClient` in `PlatformFactory::create()`
   supports.** The catalog will happily return a `Model` instance for it —
   `getModel()` never checks client coverage — but `Platform::invoke()` fails at
-  call time with no signal at catalog-build time. This is the equivalent of the
-  Drupal module offering an operation type whose interface isn't declared: it
-  looks offered right up until someone calls it. `scripts/verify_catalog.php`
-  checks this explicitly; see `references/verifying.md`.
+  call time with no signal at catalog-build time: the model looks offered
+  right up until someone calls it. `scripts/verify_catalog.php` checks this
+  explicitly; see `references/verifying.md`.
 
 ## Capabilities beyond the four currently used
 
@@ -77,9 +74,8 @@ outside of an explicit reasoning-capability task.
 
 Removing a catalog entry is a breaking change for any caller still passing that
 model name — the next call gets a `ModelNotFoundException` instead of a
-degraded-but-working response. There is no persisted config to migrate (unlike
-the Drupal module's `hook_update_N`), so the fix is entirely on the consumer
-side:
+degraded-but-working response. There is no persisted config to migrate, so the
+fix is entirely on the consumer side:
 
 - Remove the entry from `src/ModelCatalog.php` and every README/`composer.json`
   reference.
