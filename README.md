@@ -10,32 +10,50 @@ composer require mittwald/symfony-ai-platform
 
 ## Usage
 
+Every operation type shares the same setup:
+
 ```php
 use Mittwald\Symfony\AI\Platform\Bridge\PlatformFactory;
+
+$platform = PlatformFactory::create('your-api-key');
+```
+
+### Chat
+
+```php
 use Symfony\AI\Platform\Message\Message;
 use Symfony\AI\Platform\Message\MessageBag;
 
-$platform = PlatformFactory::create('your-api-key');
-
-// Chat completion
 $result = $platform->invoke('gpt-oss-120b', new MessageBag(Message::ofUser('Hello!')));
 echo $result->asText();
+```
 
-// Streaming
+Streaming:
+
+```php
 $result = $platform->invoke('gpt-oss-120b', new MessageBag(Message::ofUser('Hello!')), ['stream' => true]);
 foreach ($result->asStream() as $chunk) {
     echo $chunk;
 }
+```
 
-// Embeddings
+### Embeddings
+
+```php
 $result = $platform->invoke('Qwen3-Embedding-8B', 'text to embed');
 $vectors = $result->asVectors();
+```
 
-// Speech-to-text
+### Speech-to-Text
+
+```php
 $result = $platform->invoke('Whisper-Large-V3-Turbo', '/path/to/audio.mp3');
 echo $result->asText();
+```
 
-// Reranking
+### Reranking
+
+```php
 $result = $platform->invoke('Qwen3-VL-Reranker-2B', [
     'query' => 'What is the capital of France?',
     'documents' => ['Paris is the capital of France.', 'Berlin is the capital of Germany.'],
@@ -43,8 +61,11 @@ $result = $platform->invoke('Qwen3-VL-Reranker-2B', [
 foreach ($result->asReranking() as $entry) {
     echo $entry->getIndex().': '.$entry->getScore().PHP_EOL;
 }
+```
 
-// Text-to-speech
+### Text-to-Speech
+
+```php
 $result = $platform->invoke('Qwen3-TTS-12Hz-1.7B-CustomVoice', 'Hello and welcome!', ['voice' => 'ryan']);
 $result->asFile('/path/to/output.mp3');
 ```
