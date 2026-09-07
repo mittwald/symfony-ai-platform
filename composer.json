@@ -9,7 +9,6 @@
     "platform",
     "openai",
     "mistral",
-    "devstral",
     "qwen3",
     "whisper",
     "glm"
