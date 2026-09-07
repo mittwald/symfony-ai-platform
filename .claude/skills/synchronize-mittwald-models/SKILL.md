@@ -167,7 +167,7 @@ rather than trusting this table** — it is a baseline, not a source.
 | `Qwen3.5-122B-A10B-FP8` | Chat + reasoning + vision | text, image, tool-calling |
 | `Qwen3.6-35B-A3B-FP8` | Chat + reasoning + vision | text, image, tool-calling |
 | `Qwen3.8-27B-NVFP4` | Chat + reasoning + vision | text, image, tool-calling |
-| `GLM-OCR` | Document OCR | PDF, DOCX, PPTX, XLSX, HTML, SVG, image to text — despite the "Document OCR" type label, its own doc page confirms it is served via the existing `/v1/chat/completions` endpoint (mittwald's document proxy converts input pages to PNG before forwarding as a normal chat request), so it is a `ChatModel` catalog entry, not a new operation type |
+| `GLM-OCR` | Document OCR | PDF, DOCX, PPTX, XLSX, HTML, SVG, image to text |
 | `Qwen3-Embedding-8B` | Embedding | text to vector |
 | `Qwen3-VL-Reranker-2B` | Reranking | text, image to score |
 | `whisper-large-v3-turbo` | Speech-to-Text | audio to text |
@@ -184,11 +184,10 @@ table.
 Known drift observed at that date, verified with `verify_catalog.php` (not
 guessed):
 
-- `Qwen3.5-0.8B`, `Qwen3.8-27B-NVFP4`, `Qwen3-VL-Reranker-2B`,
+- `Qwen3.5-0.8B`, `Qwen3.8-27B-NVFP4`, `GLM-OCR`, `Qwen3-VL-Reranker-2B`,
   `Qwen3-TTS-12Hz-1.7B-CustomVoice`, and `whisper-large-v3-turbo` (the
   lowercase upstream ID) are offered upstream but have no `ModelCatalog.php`
-  entry. (`GLM-OCR` was in this list too; it now has a `ChatModel` catalog
-  entry — see above.)
+  entry.
 - `Devstral-Small-2-24B-Instruct-2512` is in `ModelCatalog.php` but does not
   appear in the current upstream table — possibly retired. Confirm with
   mittwald or a fresh probe before removing it; absence from one fetch of the
