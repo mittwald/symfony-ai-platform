@@ -22,7 +22,7 @@ final class ResultConverterTest extends TestCase
     {
         $converter = new ResultConverter();
 
-        self::assertTrue($converter->supports(new WhisperModel('Whisper-Large-V3-Turbo')));
+        self::assertTrue($converter->supports(new WhisperModel('whisper-large-v3-turbo')));
         self::assertFalse($converter->supports(new ChatModel('gpt-oss-120b')));
     }
 

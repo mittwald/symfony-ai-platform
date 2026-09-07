@@ -28,7 +28,7 @@ final class ModelCatalogTest extends TestCase
         yield 'Qwen3.8-27B-NVFP4' => ['Qwen3.8-27B-NVFP4', ChatModel::class];
         yield 'GLM-OCR' => ['GLM-OCR', ChatModel::class];
         yield 'Qwen3-Embedding-8B' => ['Qwen3-Embedding-8B', EmbeddingModel::class];
-        yield 'Whisper-Large-V3-Turbo' => ['Whisper-Large-V3-Turbo', WhisperModel::class];
+        yield 'whisper-large-v3-turbo' => ['whisper-large-v3-turbo', WhisperModel::class];
         yield 'Qwen3-VL-Reranker-2B' => ['Qwen3-VL-Reranker-2B', RerankModel::class];
         yield 'Qwen3-TTS-12Hz-1.7B-CustomVoice' => ['Qwen3-TTS-12Hz-1.7B-CustomVoice', TextToSpeechModel::class];
     }
@@ -97,7 +97,7 @@ final class ModelCatalogTest extends TestCase
     {
         $catalog = new ModelCatalog();
 
-        $model = $catalog->getModel('Whisper-Large-V3-Turbo');
+        $model = $catalog->getModel('whisper-large-v3-turbo');
 
         self::assertTrue($model->supports(Capability::SPEECH_TO_TEXT));
         self::assertTrue($model->supports(Capability::INPUT_AUDIO));

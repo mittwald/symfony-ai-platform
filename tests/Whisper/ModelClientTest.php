@@ -29,7 +29,7 @@ final class ModelClientTest extends TestCase
     {
         $client = new ModelClient(new MockHttpClient());
 
-        self::assertTrue($client->supports(new WhisperModel('Whisper-Large-V3-Turbo')));
+        self::assertTrue($client->supports(new WhisperModel('whisper-large-v3-turbo')));
         self::assertFalse($client->supports(new ChatModel('gpt-oss-120b')));
     }
 
@@ -50,7 +50,7 @@ final class ModelClientTest extends TestCase
         $client = new ModelClient($httpClient);
 
         $result = $client->request(
-            new WhisperModel('Whisper-Large-V3-Turbo'),
+            new WhisperModel('whisper-large-v3-turbo'),
             ['file' => new DataPart('raw-audio-bytes', 'audio.mp3', 'audio/mpeg')],
             ['language' => 'en', 'temperature' => 0.2, 'response_format' => 'json'],
         );
@@ -69,7 +69,7 @@ final class ModelClientTest extends TestCase
         self::assertNotEmpty($contentTypeHeaders);
 
         self::assertStringContainsString('name="model"', $body);
-        self::assertStringContainsString('Whisper-Large-V3-Turbo', $body);
+        self::assertStringContainsString('whisper-large-v3-turbo', $body);
         self::assertStringContainsString('name="file"; filename="audio.mp3"', $body);
         self::assertStringContainsString('raw-audio-bytes', $body);
         self::assertStringContainsString('name="language"', $body);
@@ -98,7 +98,7 @@ final class ModelClientTest extends TestCase
 
         $client = new ModelClient($httpClient);
 
-        $client->request(new WhisperModel('Whisper-Large-V3-Turbo'), $this->tempFile);
+        $client->request(new WhisperModel('whisper-large-v3-turbo'), $this->tempFile);
 
         self::assertNotNull($capturedBody);
         self::assertStringContainsString('audio-file-contents', $capturedBody);
@@ -124,7 +124,7 @@ final class ModelClientTest extends TestCase
 
         $client = new ModelClient($httpClient);
 
-        $client->request(new WhisperModel('Whisper-Large-V3-Turbo'), ['file' => $this->tempFile]);
+        $client->request(new WhisperModel('whisper-large-v3-turbo'), ['file' => $this->tempFile]);
 
         self::assertNotNull($capturedBody);
         self::assertStringContainsString('array-payload-audio', $capturedBody);

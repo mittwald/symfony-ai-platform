@@ -38,6 +38,7 @@
   },
   "scripts": {
     "check": "phpstan analyse",
-    "test": "phpunit"
+    "test": "phpunit --testsuite unit",
+    "test:integration": "phpunit --testsuite integration"
   }
 }
