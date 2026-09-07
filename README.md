@@ -44,6 +44,7 @@ echo $result->asText();
 | `Ministral-3-14B-Instruct-2512` | Text, Image, Tool Calling, Streaming |
 | `Qwen3.5-122B-A10B-FP8` | Text, Image, Tool Calling, Streaming, Reasoning |
 | `Qwen3.6-35B-A3B-FP8` | Text, Image, Tool Calling, Streaming, Reasoning |
+| `Qwen3.5-0.8B` | Text, Tool Calling, Streaming, Reasoning |
 | `Qwen3-Embedding-8B` | Embeddings |
 | `Whisper-Large-V3-Turbo` | Speech-to-Text |
 
