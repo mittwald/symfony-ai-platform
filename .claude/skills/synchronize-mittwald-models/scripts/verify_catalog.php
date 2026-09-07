@@ -29,7 +29,15 @@ use Symfony\AI\Platform\ModelClientInterface;
 
 // The lineup documented at the mittwald AI hosting models page:
 // https://developer.mittwald.de/docs/v2/platform/aihosting/models/
-// Last synchronised: 2026-09-04. Re-fetch before trusting this.
+// Last synchronised: 2026-09-07. Re-fetch before trusting this.
+//
+// Note: 'GLM-OCR', 'Qwen3-VL-Reranker-2B', and 'Qwen3-TTS-12Hz-1.7B-CustomVoice'
+// are intentionally NOT in ModelCatalog yet (see synchronize run report,
+// 2026-09-07) — GLM-OCR needs a plain add-model pass (it rides the existing
+// /v1/chat/completions endpoint), while the reranker and TTS model need a new
+// operation type (ModelClient/ResultConverter/Model) added first. They are
+// still listed here as "currently offered upstream" so this script keeps
+// reporting them as gaps rather than silently dropping them from view.
 $current = [
     'gpt-oss-120b',
     'Qwen3.5-0.8B',
@@ -45,9 +53,10 @@ $current = [
 ];
 
 // Models absent from the current model table above and therefore suspected
-// retired. Confirm with mittwald (or a fresh fetch) before relying on this —
-// absence from one fetch is a signal, not proof of withdrawal. These should
-// end up absent from ModelCatalog entirely once confirmed.
+// retired. Confirmed 2026-09-07: absent from a fresh fetch of the model table
+// AND its dedicated model doc page (.../models/devstral-*) no longer exists in
+// the sitemap at all (every other current model has one) — two independent
+// signals of withdrawal, not just one fetch.
 $retired = [
     'Devstral-Small-2-24B-Instruct-2512',
 ];
