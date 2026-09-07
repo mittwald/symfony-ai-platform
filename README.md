@@ -43,6 +43,10 @@ $result = $platform->invoke('Qwen3-VL-Reranker-2B', [
 foreach ($result->asReranking() as $entry) {
     echo $entry->getIndex().': '.$entry->getScore().PHP_EOL;
 }
+
+// Text-to-speech
+$result = $platform->invoke('Qwen3-TTS-12Hz-1.7B-CustomVoice', 'Hello and welcome!', ['voice' => 'ryan']);
+$result->asFile('/path/to/output.mp3');
 ```
 
 ## Supported Models
@@ -59,6 +63,7 @@ foreach ($result->asReranking() as $entry) {
 | `Qwen3-Embedding-8B` | Embeddings |
 | `Whisper-Large-V3-Turbo` | Speech-to-Text |
 | `Qwen3-VL-Reranker-2B` | Text, Image, Reranking |
+| `Qwen3-TTS-12Hz-1.7B-CustomVoice` | Text-to-Speech |
 
 ## License
 

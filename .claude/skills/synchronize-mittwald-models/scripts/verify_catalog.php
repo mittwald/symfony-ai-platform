@@ -31,16 +31,11 @@ use Symfony\AI\Platform\ModelClientInterface;
 // https://developer.mittwald.de/docs/v2/platform/aihosting/models/
 // Last synchronised: 2026-09-07. Re-fetch before trusting this.
 //
-// Note: 'GLM-OCR' and 'Qwen3-TTS-12Hz-1.7B-CustomVoice' are intentionally NOT
-// in ModelCatalog yet (see synchronize run report, 2026-09-07) — GLM-OCR needs
-// a plain add-model pass (it rides the existing /v1/chat/completions
-// endpoint), while the TTS model needs a new operation type
-// (ModelClient/ResultConverter/Model) added first. They are still listed here
-// as "currently offered upstream" so this script keeps reporting them as gaps
-// rather than silently dropping them from view.
-//
-// 'Qwen3-VL-Reranker-2B' now has its own operation type (Reranking
-// ModelClient/ResultConverter/RerankModel) and is routed via POST /v1/rerank.
+// Note: as of 2026-09-07, every model in $current below has a ModelCatalog
+// entry. 'Qwen3-VL-Reranker-2B' and 'Qwen3-TTS-12Hz-1.7B-CustomVoice' each
+// have their own operation type (Reranking ModelClient/ResultConverter/
+// RerankModel routed via POST /v1/rerank; TextToSpeechModel/TextToSpeech\
+// ModelClient/TextToSpeech\ResultConverter via POST /v1/audio/speech).
 $current = [
     'gpt-oss-120b',
     'Qwen3.5-0.8B',
@@ -97,6 +92,7 @@ foreach ([
     'Mittwald\\Symfony\\AI\\Platform\\Bridge\\Embeddings\\ModelClient',
     'Mittwald\\Symfony\\AI\\Platform\\Bridge\\Whisper\\ModelClient',
     'Mittwald\\Symfony\\AI\\Platform\\Bridge\\Reranking\\ModelClient',
+    'Mittwald\\Symfony\\AI\\Platform\\Bridge\\TextToSpeech\\ModelClient',
 ] as $clientClass) {
     if (!class_exists($clientClass)) {
         fwrite(STDERR, "Warning: $clientClass referenced by this script no longer exists — update the hardcoded list to match PlatformFactory::create().\n");

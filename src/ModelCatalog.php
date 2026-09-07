@@ -112,6 +112,13 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::RERANKING,
                 ],
             ],
+            'Qwen3-TTS-12Hz-1.7B-CustomVoice' => [
+                'class' => TextToSpeechModel::class,
+                'capabilities' => [
+                    Capability::INPUT_TEXT,
+                    Capability::TEXT_TO_SPEECH,
+                ],
+            ],
         ], $additionalModels);
     }
 }
