@@ -13,10 +13,17 @@ composer require mittwald/symfony-ai-platform
 Every operation type shares the same setup:
 
 ```php
-use Mittwald\Symfony\AI\Platform\Bridge\PlatformFactory;
+use Mittwald\Symfony\AI\Platform\Bridge\Factory;
 
-$platform = PlatformFactory::create('your-api-key');
+$platform = Factory::createPlatform('your-api-key');
 ```
+
+`Factory::createProvider()` returns the bare `ProviderInterface` instead, for
+callers that compose their own `Platform` (or discover bridges by the Symfony AI
+factory convention, such as TYPO3's `b13/aim`).
+
+> `PlatformFactory::create()` still works but is deprecated: Symfony AI renamed
+> `PlatformFactory` to `Factory` in bridge release 0.8.
 
 ### Chat
 
