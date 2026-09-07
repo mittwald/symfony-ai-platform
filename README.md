@@ -74,13 +74,13 @@ $result->asFile('/path/to/output.mp3');
 
 | Model | Capabilities |
 |-------|-------------|
-| `gpt-oss-120b` | Text, Tool Calling, Streaming |
+| `gpt-oss-120b` | Text, Tool Calling, Streaming, Reasoning |
 | `Ministral-3-14B-Instruct-2512` | Text, Image, Tool Calling, Streaming |
 | `Qwen3.5-122B-A10B-FP8` | Text, Image, Tool Calling, Streaming, Reasoning |
 | `Qwen3.6-35B-A3B-FP8` | Text, Image, Tool Calling, Streaming, Reasoning |
 | `Qwen3.5-0.8B` | Text, Tool Calling, Streaming, Reasoning |
 | `Qwen3.8-27B-NVFP4` | Text, Image, Tool Calling, Reasoning, Streaming |
-| `GLM-OCR` | Text, Image |
+| `GLM-OCR` | Text, Image, PDF |
 | `Qwen3-Embedding-8B` | Embeddings |
 | `whisper-large-v3-turbo` | Speech-to-Text |
 | `Qwen3-VL-Reranker-2B` | Text, Image, Reranking |
