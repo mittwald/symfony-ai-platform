@@ -67,6 +67,18 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::TOOL_CALLING,
                 ],
             ],
+            'Qwen3.8-27B-NVFP4' => [
+                'class' => ChatModel::class,
+                'capabilities' => [
+                    Capability::INPUT_MESSAGES,
+                    Capability::INPUT_TEXT,
+                    Capability::INPUT_IMAGE,
+                    Capability::OUTPUT_TEXT,
+                    Capability::OUTPUT_STREAMING,
+                    Capability::TOOL_CALLING,
+                    Capability::THINKING,
+                ],
+            ],
             'Qwen3-Embedding-8B' => [
                 'class' => EmbeddingModel::class,
                 'capabilities' => [
