@@ -2,23 +2,15 @@
 
 namespace Mittwald\Symfony\AI\Platform\Bridge;
 
-use Mittwald\Symfony\AI\Platform\Bridge\Chat\ModelClient as ChatModelClient;
-use Mittwald\Symfony\AI\Platform\Bridge\Chat\ResultConverter as ChatResultConverter;
-use Mittwald\Symfony\AI\Platform\Bridge\Embeddings\ModelClient as EmbeddingsModelClient;
-use Mittwald\Symfony\AI\Platform\Bridge\Embeddings\ResultConverter as EmbeddingsResultConverter;
-use Mittwald\Symfony\AI\Platform\Bridge\Reranking\ModelClient as RerankingModelClient;
-use Mittwald\Symfony\AI\Platform\Bridge\Reranking\ResultConverter as RerankingResultConverter;
-use Mittwald\Symfony\AI\Platform\Bridge\TextToSpeech\ModelClient as TextToSpeechModelClient;
-use Mittwald\Symfony\AI\Platform\Bridge\TextToSpeech\ResultConverter as TextToSpeechResultConverter;
-use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ModelClient as WhisperModelClient;
-use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ResultConverter as WhisperResultConverter;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\AI\Platform\Contract;
 use Symfony\AI\Platform\Platform;
-use Symfony\AI\Platform\Provider;
-use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * @deprecated since 0.2, use {@see Factory::createPlatform()} instead.
+ *             Symfony AI renamed `PlatformFactory` to `Factory` in bridge
+ *             release 0.8; this class is kept as a thin alias for BC.
+ */
 final class PlatformFactory
 {
     public static function create(
@@ -27,45 +19,9 @@ final class PlatformFactory
         ?ModelCatalog $modelCatalog = null,
         ?EventDispatcherInterface $dispatcher = null,
     ): Platform {
-        $httpClient = self::configureHttpClient($httpClient ?? HttpClient::create(), $apiKey);
-        $modelCatalog ??= new ModelCatalog();
+        $platform = Factory::createPlatform($apiKey, $httpClient, $modelCatalog, $dispatcher);
+        \assert($platform instanceof Platform);
 
-        $modelClients = [
-            new ChatModelClient($httpClient),
-            new EmbeddingsModelClient($httpClient),
-            new WhisperModelClient($httpClient),
-            new RerankingModelClient($httpClient),
-            new TextToSpeechModelClient($httpClient),
-        ];
-
-        $resultConverters = [
-            new ChatResultConverter(),
-            new EmbeddingsResultConverter(),
-            new WhisperResultConverter(),
-            new RerankingResultConverter(),
-            new TextToSpeechResultConverter(),
-        ];
-
-        $provider = new Provider(
-            'mittwald',
-            $modelClients,
-            $resultConverters,
-            $modelCatalog,
-            Contract::create(),
-            $dispatcher,
-        );
-
-        return new Platform([$provider], eventDispatcher: $dispatcher);
-    }
-
-    private static function configureHttpClient(HttpClientInterface $httpClient, string $apiKey): HttpClientInterface
-    {
-        return $httpClient->withOptions([
-            'base_uri' => 'https://llm.aihosting.mittwald.de',
-            'auth_bearer' => $apiKey,
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-        ]);
+        return $platform;
     }
 }
