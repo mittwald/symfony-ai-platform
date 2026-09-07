@@ -34,7 +34,7 @@
   "prefer-stable": true,
   "require-dev": {
     "phpstan/phpstan": "2.2.x-dev",
-    "phpunit/phpunit": "^12.5"
+    "phpunit/phpunit": "^11.5 || ^12.5"
   },
   "scripts": {
     "check": "phpstan analyse",
