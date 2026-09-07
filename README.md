@@ -47,7 +47,7 @@ $vectors = $result->asVectors();
 ### Speech-to-Text
 
 ```php
-$result = $platform->invoke('Whisper-Large-V3-Turbo', '/path/to/audio.mp3');
+$result = $platform->invoke('whisper-large-v3-turbo', '/path/to/audio.mp3');
 echo $result->asText();
 ```
 
@@ -82,9 +82,32 @@ $result->asFile('/path/to/output.mp3');
 | `Qwen3.8-27B-NVFP4` | Text, Image, Tool Calling, Reasoning, Streaming |
 | `GLM-OCR` | Text, Image |
 | `Qwen3-Embedding-8B` | Embeddings |
-| `Whisper-Large-V3-Turbo` | Speech-to-Text |
+| `whisper-large-v3-turbo` | Speech-to-Text |
 | `Qwen3-VL-Reranker-2B` | Text, Image, Reranking |
 | `Qwen3-TTS-12Hz-1.7B-CustomVoice` | Text-to-Speech |
+
+## Development
+
+```bash
+composer install
+composer run check   # static analysis (phpstan)
+composer run test    # PHPUnit unit test suite (mocked HTTP, no network access)
+```
+
+### Integration tests
+
+A separate suite in `tests/Integration` exercises every operation type against
+the real mittwald AI Hosting API. It requires a live API key and makes actual
+(billed) requests, so it is never part of `composer run test` and does not run
+on pull requests. Run it explicitly:
+
+```bash
+MITTWALD_AI_API_KEY=your-api-key composer run test:integration
+```
+
+Without `MITTWALD_AI_API_KEY` set, every test in that suite is skipped. In CI,
+the `Integration tests` workflow runs it once a day (and can be triggered
+manually) using a repository secret named `MITTWALD_AI_API_KEY`.
 
 ## License
 

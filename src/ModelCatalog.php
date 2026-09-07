@@ -97,7 +97,7 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::EMBEDDINGS,
                 ],
             ],
-            'Whisper-Large-V3-Turbo' => [
+            'whisper-large-v3-turbo' => [
                 'class' => WhisperModel::class,
                 'capabilities' => [
                     Capability::INPUT_AUDIO,

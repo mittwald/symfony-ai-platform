@@ -1,0 +1,30 @@
+name: Integration tests
+
+on:
+  schedule:
+    # Daily at 04:00 UTC.
+    - cron: '0 4 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'mittwald/symfony-ai-platform' }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, intl, json, dom, xml
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run integration tests against the live API
+        env:
+          MITTWALD_AI_API_KEY: ${{ secrets.MITTWALD_AI_API_KEY }}
+        run: composer run test:integration

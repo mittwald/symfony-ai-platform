@@ -17,10 +17,12 @@
   "autoload": {
     "psr-4": {
       "Mittwald\\Symfony\\AI\\Platform\\Bridge\\": "src"
-    },
-    "exclude-from-classmap": [
-      "/vendor/"
-    ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mittwald\\Symfony\\AI\\Platform\\Bridge\\Tests\\": "tests"
+    }
   },
   "require": {
     "php": ">=8.2",
@@ -29,10 +31,14 @@
     "symfony/mime": "^7.3|^8.0"
   },
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "require-dev": {
-    "phpstan/phpstan": "2.2.x-dev"
+    "phpstan/phpstan": "2.2.x-dev",
+    "phpunit/phpunit": "^11.5 || ^12.5"
   },
   "scripts": {
-    "check": "phpstan analyse"
+    "check": "phpstan analyse",
+    "test": "phpunit --testsuite unit",
+    "test:integration": "phpunit --testsuite integration"
   }
 }
