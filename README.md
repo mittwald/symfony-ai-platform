@@ -29,11 +29,13 @@ Both methods accept the same optional overrides sibling Symfony AI bridges
 expose: `$httpClient`, `$modelCatalog`, `$dispatcher`, `$contract`, `$name`
 (default `'mittwald'`), and `$baseUrl` (default
 `'https://llm.aihosting.mittwald.de'`); `createPlatform()` additionally
-accepts `$modelRouter`. `$name` and `$baseUrl` are there for cases like routing
-through a self-hosted proxy in front of the mittwald API:
+accepts `$modelRouter`. `$baseUrl` matters if you're on
+[Dedicated AI Hosting](https://developer.mittwald.de/docs/v2/platform/aihosting/dedicated/),
+which serves your reserved capacity from a customer-specific subdomain instead
+of the shared endpoint:
 
 ```php
-$provider = Factory::createProvider('your-api-key', baseUrl: 'https://your-proxy.example/mittwald-ai');
+$provider = Factory::createProvider('your-api-key', baseUrl: 'https://your-company.llm.aihosting.mittwald.de');
 ```
 
 API errors are translated into the shared platform exceptions
