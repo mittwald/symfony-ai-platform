@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\AI\Platform\Exception\AuthenticationException;
 use Symfony\AI\Platform\Exception\BadRequestException;
 use Symfony\AI\Platform\Exception\RateLimitExceededException;
+use Symfony\AI\Platform\Exception\ServerException;
 use Symfony\AI\Platform\Result\RawHttpResult;
 use Symfony\AI\Platform\Result\VectorResult;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -62,7 +63,7 @@ final class ResultConverterTest extends TestCase
         yield '401 unauthorized' => [401, AuthenticationException::class];
         yield '429 rate limited' => [429, RateLimitExceededException::class];
         yield '400 bad request' => [400, BadRequestException::class];
-        yield '500 server error' => [500, BadRequestException::class];
+        yield '500 server error' => [500, ServerException::class];
     }
 
     #[DataProvider('errorStatusCodeProvider')]
