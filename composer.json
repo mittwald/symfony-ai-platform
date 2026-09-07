@@ -10,7 +10,8 @@
     "openai",
     "mistral",
     "qwen3",
-    "whisper"
+    "whisper",
+    "glm"
   ],
   "homepage": "https://github.com/mittwald/symfony-ai-platform",
   "autoload": {
