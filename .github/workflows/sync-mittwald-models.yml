@@ -94,4 +94,4 @@ jobs:
           drift to fix, do not commit, push, or open a PR — just say so.
           PROMPT_EOF
           )
-          opencode run --auto "$PROMPT"
+          opencode run --print-logs --thinking --auto "$PROMPT"
