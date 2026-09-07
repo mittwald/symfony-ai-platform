@@ -34,6 +34,15 @@ $vectors = $result->asVectors();
 // Speech-to-text
 $result = $platform->invoke('Whisper-Large-V3-Turbo', '/path/to/audio.mp3');
 echo $result->asText();
+
+// Reranking
+$result = $platform->invoke('Qwen3-VL-Reranker-2B', [
+    'query' => 'What is the capital of France?',
+    'documents' => ['Paris is the capital of France.', 'Berlin is the capital of Germany.'],
+]);
+foreach ($result->asReranking() as $entry) {
+    echo $entry->getIndex().': '.$entry->getScore().PHP_EOL;
+}
 ```
 
 ## Supported Models
@@ -46,6 +55,7 @@ echo $result->asText();
 | `Qwen3.6-35B-A3B-FP8` | Text, Image, Tool Calling, Streaming, Reasoning |
 | `Qwen3-Embedding-8B` | Embeddings |
 | `Whisper-Large-V3-Turbo` | Speech-to-Text |
+| `Qwen3-VL-Reranker-2B` | Text, Image, Reranking |
 
 ## License
 

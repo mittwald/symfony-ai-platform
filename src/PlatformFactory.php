@@ -6,6 +6,8 @@ use Mittwald\Symfony\AI\Platform\Bridge\Chat\ModelClient as ChatModelClient;
 use Mittwald\Symfony\AI\Platform\Bridge\Chat\ResultConverter as ChatResultConverter;
 use Mittwald\Symfony\AI\Platform\Bridge\Embeddings\ModelClient as EmbeddingsModelClient;
 use Mittwald\Symfony\AI\Platform\Bridge\Embeddings\ResultConverter as EmbeddingsResultConverter;
+use Mittwald\Symfony\AI\Platform\Bridge\Reranking\ModelClient as RerankingModelClient;
+use Mittwald\Symfony\AI\Platform\Bridge\Reranking\ResultConverter as RerankingResultConverter;
 use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ModelClient as WhisperModelClient;
 use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ResultConverter as WhisperResultConverter;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -30,12 +32,14 @@ final class PlatformFactory
             new ChatModelClient($httpClient),
             new EmbeddingsModelClient($httpClient),
             new WhisperModelClient($httpClient),
+            new RerankingModelClient($httpClient),
         ];
 
         $resultConverters = [
             new ChatResultConverter(),
             new EmbeddingsResultConverter(),
             new WhisperResultConverter(),
+            new RerankingResultConverter(),
         ];
 
         $provider = new Provider(
