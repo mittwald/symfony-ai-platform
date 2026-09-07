@@ -67,6 +67,15 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::TOOL_CALLING,
                 ],
             ],
+            'GLM-OCR' => [
+                'class' => ChatModel::class,
+                'capabilities' => [
+                    Capability::INPUT_MESSAGES,
+                    Capability::INPUT_TEXT,
+                    Capability::INPUT_IMAGE,
+                    Capability::OUTPUT_TEXT,
+                ],
+            ],
             'Qwen3-Embedding-8B' => [
                 'class' => EmbeddingModel::class,
                 'capabilities' => [
