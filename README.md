@@ -13,21 +13,28 @@ provider into that API.
 
 This package is the bridge for
 [**mittwald AI Hosting**](https://developer.mittwald.de/docs/v2/platform/aihosting/introduction/),
-which serves models such as GPT-OSS, Qwen, Ministral, Whisper and GLM from a
-fully EU-based hosting infrastructure. Installing it lets you:
+which serves models such as GPT-OSS, Qwen, Ministral, Whisper and GLM over an
+OpenAI-compatible API. Installing it lets you:
 
 - **Use mittwald-hosted models through the standard Symfony AI interfaces** —
-  the same code that talks to OpenAI or Anthropic bridges works here; only the
-  factory call and the model ID change.
+  for chat and embeddings, the same code that talks to the OpenAI or Anthropic
+  bridges works here; only the factory call and the model ID change.
 - **Cover five operation types, not just chat** — chat completion (with
   streaming, tool calling, vision and reasoning models), text embeddings,
   speech-to-text, text-to-speech and document reranking, each with a result
   object that already knows how to decode mittwald's responses.
-- **Keep inference inside the EU**, which is the point of the product for
-  privacy-sensitive projects — see mittwald's
-  [data protection notes](https://developer.mittwald.de/docs/v2/platform/aihosting/access-and-usage/data-protection/).
+- **Know where your prompts go** — mittwald describes the models as stateless,
+  so "no content-related information from submitted inputs, outputs, or prompts
+  is stored or processed for other purposes", and
+  [Dedicated AI Hosting](https://developer.mittwald.de/docs/v2/platform/aihosting/dedicated/)
+  is hosted in Germany. Building a GDPR-compliant application on top of it
+  remains your own responsibility — read the
+  [data protection notes](https://developer.mittwald.de/docs/v2/platform/aihosting/access-and-usage/data-protection/)
+  before you rely on any of this.
 - **Swap providers without rewriting application code**, because everything is
-  expressed against `Symfony\AI\Platform\PlatformInterface`.
+  expressed against `Symfony\AI\Platform\PlatformInterface`. Reranking and
+  text-to-speech take provider-shaped payloads and options, so those are less
+  portable than chat.
 
 If you're building agents, RAG pipelines or tool-calling workflows on top of
 [Symfony AI Agent](https://github.com/symfony/ai) or the AI Bundle, this bridge
@@ -63,13 +70,17 @@ Following mittwald's
 [Gaining access](https://developer.mittwald.de/docs/v2/platform/aihosting/access-and-usage/access/)
 guide, you need an mStudio account, an organization, and a project with an active
 hosting product. In that project, open the **AI-Hosting** entry in the sidebar and
-complete the booking; you then receive your API base URL and can create an API key.
+complete the (paid) booking; you then receive your API base URL and can create an
+API key.
 
 The key is sent as an HTTP bearer token, by default to
-`https://llm.aihosting.mittwald.de`. If your base URL differs — which it does on
-[Dedicated AI Hosting](https://developer.mittwald.de/docs/v2/platform/aihosting/dedicated/)
-— pass it as `$baseUrl`, see [Usage](#usage). Treat the key like a password: keep
-it out of version control and read it from an environment variable or secrets store.
+`https://llm.aihosting.mittwald.de`. If your base URL differs, pass it as
+`$baseUrl` — see [Usage](#usage). Note that mittwald's docs quote endpoints
+including the `/v1` suffix; leave that off, because the bridge appends the
+version and path itself.
+
+Treat the key like a password: keep it out of version control and read it from an
+environment variable or a secrets store.
 
 ### Quick start
 
@@ -78,7 +89,7 @@ use Mittwald\Symfony\AI\Platform\Bridge\Factory;
 use Symfony\AI\Platform\Message\Message;
 use Symfony\AI\Platform\Message\MessageBag;
 
-$platform = Factory::createPlatform($_ENV['MITTWALD_AI_API_KEY']);
+$platform = Factory::createPlatform(getenv('MITTWALD_AI_API_KEY'));
 
 $result = $platform->invoke('gpt-oss-120b', new MessageBag(
     Message::ofUser('Explain what a Symfony AI platform bridge is, in one sentence.'),
