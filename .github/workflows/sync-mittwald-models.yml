@@ -59,8 +59,9 @@ jobs:
           skill to add it, following that skill's rules for routing and
           capabilities. Apply retirals, capability corrections, and
           additions directly to the working tree, and follow each skill's
-          own verification steps (scripts/verify_catalog.php, vendor/bin/phpstan
-          analyse).
+          own verification steps ("composer run test", "composer run
+          check", and scripts/compare_lineup.php fed the lineup you
+          fetched in this run).
 
           The MITTWALD_AI_API_KEY environment variable is already set (it
           also backs your own mittwald AI Hosting model via opencode.json).
