@@ -1,6 +1,6 @@
 # mittwald/symfony-ai-platform
 
-A [Symfony AI](https://github.com/symfony/ai) **platform bridge** for
+The official [Symfony AI](https://github.com/symfony/ai) **platform bridge** for
 [mittwald's AI Hosting API](https://llm.aihosting.mittwald.de).
 
 ## What this package does
@@ -23,14 +23,11 @@ OpenAI-compatible API. Installing it lets you:
   streaming, tool calling, vision and reasoning models), text embeddings,
   speech-to-text, text-to-speech and document reranking, each with a result
   object that already knows how to decode mittwald's responses.
-- **Know where your prompts go** — mittwald describes the models as stateless,
-  so "no content-related information from submitted inputs, outputs, or prompts
-  is stored or processed for other purposes", and
-  [Dedicated AI Hosting](https://developer.mittwald.de/docs/v2/platform/aihosting/dedicated/)
-  is hosted in Germany. Building a GDPR-compliant application on top of it
-  remains your own responsibility — read the
+- **Keep your data in Germany** — the models run on infrastructure mittwald
+  operates in Germany, and they are stateless: no content from your inputs,
+  outputs or prompts is stored or processed for other purposes. See the
   [data protection notes](https://developer.mittwald.de/docs/v2/platform/aihosting/access-and-usage/data-protection/)
-  before you rely on any of this.
+  for details.
 - **Swap providers without rewriting application code**, because everything is
   expressed against `Symfony\AI\Platform\PlatformInterface`. Reranking and
   text-to-speech take provider-shaped payloads and options, so those are less
@@ -75,9 +72,9 @@ API key.
 
 The key is sent as an HTTP bearer token, by default to
 `https://llm.aihosting.mittwald.de`. If your base URL differs, pass it as
-`$baseUrl` — see [Usage](#usage). Note that mittwald's docs quote endpoints
-including the `/v1` suffix; leave that off, because the bridge appends the
-version and path itself.
+`$baseUrl` — see [Usage](#usage). Endpoints are documented including the `/v1`
+suffix; leave that off here, because the bridge appends the version and path
+itself.
 
 Treat the key like a password: keep it out of version control and read it from an
 environment variable or a secrets store.
@@ -207,9 +204,9 @@ $result->asFile('/path/to/output.mp3');
 
 ## Supported Models
 
-These are the model IDs this bridge's catalog knows about. mittwald's own
+These are the model IDs this bridge's catalog knows about. The
 [Available models](https://developer.mittwald.de/docs/v2/platform/aihosting/models/)
-page is the authoritative list of what the API currently serves.
+documentation is the authoritative list of what the API currently serves.
 
 | Model | Capabilities |
 |-------|-------------|
