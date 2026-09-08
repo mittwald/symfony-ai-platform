@@ -64,10 +64,12 @@ without checking this specific model's row.
 Read
 `.claude/skills/synchronize-mittwald-models/references/model-touchpoints.md`.
 It carries the full inventory of locations. For an addition, the rows that
-usually apply are `src/ModelCatalog.php` itself, the README's model table and
-usage examples, and `composer.json`'s `keywords` if this is a new model
-family. `src/PlatformFactory.php` and a new `ModelClient`/`ResultConverter`/
-`Model` triple only apply if Step 1 escalated this to a new operation type.
+usually apply are `src/ModelCatalog.php` itself, `tests/ModelCatalogTest.php`
+(see Step 4), the README's model table and usage examples, and
+`composer.json`'s `keywords` if this is a new model family.
+`src/Factory.php`, `tests/ModelRoutingTest.php`'s `OPERATION_TYPES`, and a new
+`ModelClient`/`ResultConverter`/`Model` triple only apply if Step 1 escalated
+this to a new operation type.
 
 Add the new entry to the array literal in `ModelCatalog.php` — do not
 introduce a second array, a conditional branch, or a regex; every existing
@@ -79,10 +81,19 @@ row, so match that shape exactly.
 Follow
 `.claude/skills/synchronize-mittwald-models/references/verifying.md`.
 
-Add the new model to the `$current` array in `scripts/verify_catalog.php`
-first, otherwise its report won't check it. Confirm it appears with exactly
-the class and capabilities Step 2 established, that exactly one `ModelClient`
-supports it, and that no other model's row changed.
+Add a row for the new model to `modelClassProvider()` in
+`tests/ModelCatalogTest.php` — `composer test` fails until you do, because
+every catalogued model has to have its intended class stated there. Assert the
+capabilities Step 2 established alongside it, following the per-capability
+tests already in that file.
+
+`composer test` then also checks, via `tests/ModelRoutingTest.php`, that
+exactly one `ModelClient` and one `ResultConverter` claim the new model. Read
+the diff to confirm no other model's row changed.
+
+`scripts/compare_lineup.php` in the `synchronize-mittwald-models` skill is not
+needed for a single addition — it diffs the whole lineup, which is that
+skill's job.
 
 `vendor/bin/phpstan analyse` is a clean, real signal in this repo — a new
 error here is worth explaining, not filtering past.
