@@ -13,6 +13,8 @@ use Mittwald\Symfony\AI\Platform\Bridge\TextToSpeech\ResultConverter as TextToSp
 use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ModelClient as WhisperModelClient;
 use Mittwald\Symfony\AI\Platform\Bridge\Whisper\ResultConverter as WhisperResultConverter;
 use Symfony\AI\Platform\Contract;
+use Symfony\AI\Platform\ModelRouter\CatalogBasedModelRouter;
+use Symfony\AI\Platform\ModelRouterInterface;
 use Symfony\AI\Platform\Platform;
 use Symfony\AI\Platform\PlatformInterface;
 use Symfony\AI\Platform\Provider;
@@ -37,8 +39,11 @@ final class Factory
         ?HttpClientInterface $httpClient = null,
         ?ModelCatalog $modelCatalog = null,
         ?EventDispatcherInterface $dispatcher = null,
+        ?Contract $contract = null,
+        string $name = 'mittwald',
+        string $baseUrl = 'https://llm.aihosting.mittwald.de',
     ): ProviderInterface {
-        $httpClient = self::configureHttpClient($httpClient ?? HttpClient::create(), $apiKey);
+        $httpClient = self::configureHttpClient($httpClient ?? HttpClient::create(), $apiKey, $baseUrl);
         $modelCatalog ??= new ModelCatalog();
 
         $modelClients = [
@@ -58,11 +63,11 @@ final class Factory
         ];
 
         return new Provider(
-            'mittwald',
+            $name,
             $modelClients,
             $resultConverters,
             $modelCatalog,
-            Contract::create(),
+            $contract ?? Contract::create(),
             $dispatcher,
         );
     }
@@ -72,17 +77,22 @@ final class Factory
         ?HttpClientInterface $httpClient = null,
         ?ModelCatalog $modelCatalog = null,
         ?EventDispatcherInterface $dispatcher = null,
+        ?Contract $contract = null,
+        string $name = 'mittwald',
+        ?ModelRouterInterface $modelRouter = null,
+        string $baseUrl = 'https://llm.aihosting.mittwald.de',
     ): PlatformInterface {
         return new Platform(
-            [self::createProvider($apiKey, $httpClient, $modelCatalog, $dispatcher)],
-            eventDispatcher: $dispatcher,
+            [self::createProvider($apiKey, $httpClient, $modelCatalog, $dispatcher, $contract, $name, $baseUrl)],
+            $modelRouter ?? new CatalogBasedModelRouter(),
+            $dispatcher,
         );
     }
 
-    private static function configureHttpClient(HttpClientInterface $httpClient, string $apiKey): HttpClientInterface
+    private static function configureHttpClient(HttpClientInterface $httpClient, string $apiKey, string $baseUrl): HttpClientInterface
     {
         return $httpClient->withOptions([
-            'base_uri' => 'https://llm.aihosting.mittwald.de',
+            'base_uri' => $baseUrl,
             'auth_bearer' => $apiKey,
             'headers' => [
                 'Content-Type' => 'application/json',

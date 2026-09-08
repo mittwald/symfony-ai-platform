@@ -3,10 +3,8 @@
 namespace Mittwald\Symfony\AI\Platform\Bridge\Chat;
 
 use Mittwald\Symfony\AI\Platform\Bridge\ChatModel;
-use Symfony\AI\Platform\Exception\AuthenticationException;
-use Symfony\AI\Platform\Exception\BadRequestException;
-use Symfony\AI\Platform\Exception\RateLimitExceededException;
 use Symfony\AI\Platform\Model;
+use Symfony\AI\Platform\Result\HttpStatusErrorHandlingTrait;
 use Symfony\AI\Platform\Result\RawResultInterface;
 use Symfony\AI\Platform\Result\ResultInterface;
 use Symfony\AI\Platform\Result\Stream\Delta\TextDelta;
@@ -20,6 +18,8 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class ResultConverter implements ResultConverterInterface
 {
+    use HttpStatusErrorHandlingTrait;
+
     public function __construct(
         private readonly TokenUsageExtractor $tokenUsageExtractor = new TokenUsageExtractor(),
     ) {
@@ -32,11 +32,15 @@ final class ResultConverter implements ResultConverterInterface
 
     public function convert(RawResultInterface $result, array $options = []): ResultInterface
     {
+        $response = $result->getObject();
+
+        if ($response instanceof ResponseInterface) {
+            $this->throwOnHttpError($response);
+        }
+
         if ($options['stream'] ?? false) {
             return new StreamResult($this->createStreamGenerator($result));
         }
-
-        $this->checkErrorResponse($result);
 
         $data = $result->getData();
         $choice = $data['choices'][0] ?? [];
@@ -52,28 +56,6 @@ final class ResultConverter implements ResultConverterInterface
     public function getTokenUsageExtractor(): TokenUsageExtractorInterface
     {
         return $this->tokenUsageExtractor;
-    }
-
-    private function checkErrorResponse(RawResultInterface $result): void
-    {
-        $response = $result->getObject();
-
-        if (!$response instanceof ResponseInterface) {
-            return;
-        }
-
-        $statusCode = $response->getStatusCode();
-
-        if ($statusCode >= 200 && $statusCode < 300) {
-            return;
-        }
-
-        match ($statusCode) {
-            401 => throw new AuthenticationException('Invalid API key or unauthorized access.'),
-            429 => throw new RateLimitExceededException(),
-            400 => throw new BadRequestException('Bad request: ' . ($result->getData()['error']['message'] ?? 'Unknown error')),
-            default => throw new BadRequestException(\sprintf('HTTP %d: %s', $statusCode, $result->getData()['error']['message'] ?? 'Unknown error')),
-        };
     }
 
     /**

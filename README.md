@@ -25,6 +25,24 @@ factory convention, such as TYPO3's `b13/aim`).
 > `PlatformFactory::create()` still works but is deprecated: Symfony AI renamed
 > `PlatformFactory` to `Factory` in bridge release 0.8.
 
+Both methods accept the same optional overrides sibling Symfony AI bridges
+expose: `$httpClient`, `$modelCatalog`, `$dispatcher`, `$contract`, `$name`
+(default `'mittwald'`), and `$baseUrl` (default
+`'https://llm.aihosting.mittwald.de'`); `createPlatform()` additionally
+accepts `$modelRouter`. `$baseUrl` matters if you're on
+[Dedicated AI Hosting](https://developer.mittwald.de/docs/v2/platform/aihosting/dedicated/),
+which serves your reserved capacity from a customer-specific subdomain instead
+of the shared endpoint:
+
+```php
+$provider = Factory::createProvider('your-api-key', baseUrl: 'https://your-company.llm.aihosting.mittwald.de');
+```
+
+API errors are translated into the shared platform exceptions
+(`AuthenticationException` for 401, `BadRequestException` for 400,
+`RateLimitExceededException` for 429, `ServerException` for 5xx) via
+`HttpStatusErrorHandlingTrait`, the same convention other Symfony AI bridges use.
+
 ### Chat
 
 ```php
