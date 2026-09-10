@@ -2,53 +2,82 @@
 
 Shared reference for the `add-model` and `synchronize-mittwald-models` skills.
 
-## The harness
+Verification splits in two: what the repo can assert about itself, which is the
+unit test suite's job and runs in CI on every PR, and what only a fetch of the
+mittwald docs can settle, which is `compare_lineup.php`'s job and yours.
+
+## The test suite
 
 ```bash
-php .claude/skills/synchronize-mittwald-models/scripts/verify_catalog.php
+composer test
 ```
 
-It loads `ModelCatalog` through the real composer autoloader, instantiates
-every catalogued model, and checks two things per model:
+`tests/ModelRoutingTest.php` reads `ModelCatalog` and asserts, for every model
+in it:
 
-- it actually instantiates (catches a bad `class` value or a class that
-  doesn't extend `Model`);
-- exactly one of the `ModelClient`s `PlatformFactory::create()` wires up
-  claims it via `supports()`. Zero means the model is offered by the catalog
-  but `Platform::invoke()` will fail on it at call time; more than one means
-  two operation types are fighting over the same model class.
+- it instantiates (a `class` value that doesn't exist, or doesn't extend
+  `Model`, throws right here);
+- exactly one of the `ModelClient`s `Factory::createProvider()` wires up claims
+  it via `supports()`, and it is the one for that model's class. Zero means the
+  model is offered by the catalog but `Provider::invoke()` fails on it at call
+  time; more than one means two operation types are fighting over the same
+  model class and whichever is iterated first silently wins;
+- the same for `ResultConverter`s, where the call-time failure is a
+  `RuntimeException` instead.
 
-It then diffs the catalog's keys against hand-maintained `$current` and
-`$retired` arrays — **update those from the verbatim mittwald model table
-before trusting a run**. A model present in `$current` but absent from the
-catalog is a gap; one present in `$retired` but still in the catalog should
-have been removed. Only add a model to `$retired` once its absence upstream is
-actually confirmed (a fresh fetch of the model table, or a direct answer from
-mittwald) — this list is a claim about reality, not a place to copy names from
-elsewhere.
+It reads both wiring lists off the `Provider` that `Factory::createProvider()`
+actually returns, so a client that stops being wired up fails the test rather
+than being quietly missed.
 
-Reading the output: a `!` line is either a structural problem (no client, bad
-instantiation) or a drift-vs-docs problem (missing/still-present). Neither is
-optional to explain away — see the reports each skill's Step asks for.
+`tests/ModelCatalogTest.php` pins the intended class and the capability claims
+per model, and `testEveryCatalogedModelHasAnExpectedClass` fails if a model in
+the catalog has no row there — so a new entry cannot land without someone
+stating what it is supposed to be.
 
-One pass over `getModels()` covers both concerns here, because the catalog is
-a plain array keyed by exact model name: PHP itself throws on a bad `class`
-entry, and "no client claims this model" is just another property of the same
-instantiated `Model` to check.
+**A model added to `ModelCatalog.php` therefore needs a row in
+`ModelCatalogTest::modelClassProvider()`**, and a new *operation type* also
+needs a row in `ModelRoutingTest::OPERATION_TYPES`. That is the point: the
+addition can't be half-applied.
 
-## What it cannot check
+## The lineup diff
 
-`verify_catalog.php` only checks structural wiring — it cannot tell you
-whether a `capabilities` list actually matches the model's documented
-modality column (there is no local copy of that table to check against, only
-the hand-maintained snapshot arrays). Cross-check capability claims against
-the fetched model table by eye.
+```bash
+php .claude/skills/synchronize-mittwald-models/scripts/compare_lineup.php <<'EOF'
+gpt-oss-120b
+Qwen3-Embedding-8B
+…
+EOF
+```
+
+Feed it every model ID from the table you fetched in this run, verbatim — IDs
+on stdin (one per line, `#` comments ignored) or as arguments. It diffs them
+against the catalog's keys and reports both directions:
+
+- **offered upstream, missing from the catalog** — a gap; add it with the
+  `add-model` skill or say why it is out of scope.
+- **in the catalog, absent from your lineup** — a *candidate* retiral, not a
+  confirmed one. It reads identically whether mittwald withdrew the model or
+  your fetch dropped a row, which is why the script cannot decide it for you.
+  Confirm withdrawal independently (a fresh fetch of the model table, plus the
+  absence of that model's dedicated doc page from the sitemap) before removing
+  anything; removal is a breaking change for callers still passing the ID.
+
+The script deliberately holds no list of its own. A snapshot checked in here
+would be stale on its next run and green while stale — the lineup has to come
+from the fetch you just did.
+
+## What neither can check
+
+Nothing local can tell you whether a `capabilities` list matches the model's
+documented modality column. `compare_lineup.php` prints every catalog entry
+with its class and capabilities as its last section; compare that to the
+fetched table by eye, row by row.
 
 ## Standard checks
 
 ```bash
 composer install
-vendor/bin/phpstan analyse
+composer run check   # vendor/bin/phpstan analyse
 ```
 
 `phpstan.neon` runs at level 5 over `src/` with `symfony/ai-platform` present
@@ -61,9 +90,11 @@ There is no local API Explorer equivalent to exercise against. Verifying a
 model actually behaves as claimed means calling it for real:
 
 ```php
-$platform = \Mittwald\Symfony\AI\Platform\Bridge\PlatformFactory::create($apiKey);
+$platform = \Mittwald\Symfony\AI\Platform\Bridge\Factory::createPlatform($apiKey);
 $result = $platform->invoke('<model-id>', /* payload matching the operation type */);
 ```
 
-against a live API key, once per operation type touched. `README.md`'s
-"Usage" section has one example per operation type to adapt.
+against a live API key, once per operation type touched. `composer run
+test:integration` does exactly this for every operation type when
+`MITTWALD_AI_API_KEY` is set, and `README.md`'s "Usage" section has one example
+per operation type to adapt.

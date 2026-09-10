@@ -44,6 +44,23 @@ final class ModelCatalogTest extends TestCase
         self::assertSame($modelName, $model->getName());
     }
 
+    /**
+     * The provider above states the intended class per model independently of
+     * the catalog, which only means something if it covers every model. Without
+     * this, a model added to `ModelCatalog` would silently have no expectation
+     * pinned to it at all.
+     */
+    public function testEveryCatalogedModelHasAnExpectedClass(): void
+    {
+        $cataloged = array_keys((new ModelCatalog())->getModels());
+        $expected = array_keys(iterator_to_array(self::modelClassProvider()));
+
+        sort($cataloged);
+        sort($expected);
+
+        self::assertSame($expected, $cataloged, 'Every model in ModelCatalog needs a row in self::modelClassProvider().');
+    }
+
     public function testChatModelsSupportInputMessagesAndOutputText(): void
     {
         $catalog = new ModelCatalog();

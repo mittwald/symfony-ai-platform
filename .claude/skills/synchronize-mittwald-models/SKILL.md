@@ -64,11 +64,12 @@ web — it is guaranteed to match the installed version:
 - `vendor/symfony/ai-platform/src/ModelCatalog/AbstractModelCatalog.php` — how
   catalog lookup actually works, including the `base:variant` and
   `?query=string` parsing every model name goes through.
-- `vendor/symfony/ai-platform/src/Platform.php` — how `invoke()` picks a
-  `ModelClient` for a resolved `Model` (the first one whose `supports()`
-  returns true, across **all** registered providers — see the over-match note
+- `vendor/symfony/ai-platform/src/Provider.php` — how `invoke()` picks a
+  `ModelClient` and a `ResultConverter` for a resolved `Model` (the first one
+  whose `supports()` returns true, in wiring order — see the over-match note
   in `references/model-touchpoints.md` about more than one client claiming a
-  model class).
+  model class), and `Platform.php` for how a `Provider` is selected in the
+  first place.
 
 ## Step 2: Probe for undocumented endpoints
 
@@ -97,7 +98,7 @@ invent parameters.
 ## Step 3: Inventory every place a model ID appears
 
 Model IDs hide in more places than `ModelCatalog.php`. The full inventory —
-every location and why `PlatformFactory::create()`'s client-wiring list is the
+every location and why `Factory::createProvider()`'s client-wiring list is the
 one that bites — lives in `references/model-touchpoints.md`. Read it and visit
 every row before concluding anything is in sync.
 
@@ -113,8 +114,9 @@ supports, and that retired models are absent.
 
 Rules:
 
-- **Retired model** — remove its entry from `ModelCatalog.php`, plus its
-  README and `composer.json` mentions. If it appeared in a README code
+- **Retired model** — remove its entry from `ModelCatalog.php`, its row in
+  `tests/ModelCatalogTest::modelClassProvider()`, plus its README and
+  `composer.json` mentions. If it appeared in a README code
   example, repoint the example at a surviving model. There is no update-hook
   equivalent to write (see `references/model-touchpoints.md` — "Retiring a
   model"); state the removal plainly in the commit/PR instead, since it is a
@@ -127,16 +129,22 @@ Rules:
 - **A model whose operation type this bridge doesn't implement yet** (a new
   endpoint like rerank, text-to-speech, or OCR, rather than a new chat/
   embeddings/whisper model) needs a new `Model` subclass, a new
-  `ModelClient`/`ResultConverter` pair, and a new entry in
-  `PlatformFactory::create()`'s client list — not just a catalog row. Flag it
+  `ModelClient`/`ResultConverter` pair, a new entry in
+  `Factory::createProvider()`'s client and converter lists, and a row in
+  `tests/ModelRoutingTest::OPERATION_TYPES` — not just a catalog row. Flag it
   and scope it explicitly rather than half-wiring it.
 
 ## Step 5: Verify
 
-Follow `references/verifying.md`: `scripts/verify_catalog.php` first, then
-`vendor/bin/phpstan analyse`. Update the `$current` and `$retired` arrays in
-`verify_catalog.php` to the lineup fetched in Step 1 before reading its
-output — that is what turns it from a static check into an audit.
+Follow `references/verifying.md`: `composer test` and `vendor/bin/phpstan
+analyse` for the structural half — every catalogued model instantiates and is
+claimed by exactly one `ModelClient`/`ResultConverter` pair — then
+`scripts/compare_lineup.php`, fed the lineup you fetched in Step 1, for the
+half that depends on what mittwald offers today.
+
+The script holds no lineup of its own on purpose: what makes it an audit rather
+than a static check is that the IDs come from this run's fetch. Give it every
+row of the table, verbatim.
 
 A clean `phpstan analyse` here is a real signal — `symfony/ai-platform`
 resolves as a normal, fully-typed dependency, so there is no pre-existing
