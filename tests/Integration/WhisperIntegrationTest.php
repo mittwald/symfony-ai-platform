@@ -21,4 +21,13 @@ final class WhisperIntegrationTest extends AbstractIntegrationTestCase
 
         self::assertInstanceOf(TextResult::class, $result);
     }
+
+    public function testCohereTranscribeTranscribeReturnsTextResult(): void
+    {
+        $platform = $this->createPlatform();
+
+        $result = $platform->invoke('cohere-transcribe-03-2026', __DIR__.'/fixtures/sample.wav')->getResult();
+
+        self::assertInstanceOf(TextResult::class, $result);
+    }
 }
