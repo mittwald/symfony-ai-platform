@@ -29,6 +29,7 @@ final class ModelCatalogTest extends TestCase
         yield 'GLM-OCR' => ['GLM-OCR', ChatModel::class];
         yield 'Qwen3-Embedding-8B' => ['Qwen3-Embedding-8B', EmbeddingModel::class];
         yield 'whisper-large-v3-turbo' => ['whisper-large-v3-turbo', WhisperModel::class];
+        yield 'cohere-transcribe-03-2026' => ['cohere-transcribe-03-2026', WhisperModel::class];
         yield 'Qwen3-VL-Reranker-2B' => ['Qwen3-VL-Reranker-2B', RerankModel::class];
         yield 'Qwen3-TTS-12Hz-1.7B-CustomVoice' => ['Qwen3-TTS-12Hz-1.7B-CustomVoice', TextToSpeechModel::class];
     }
@@ -124,10 +125,12 @@ final class ModelCatalogTest extends TestCase
     {
         $catalog = new ModelCatalog();
 
-        $model = $catalog->getModel('whisper-large-v3-turbo');
+        foreach (['whisper-large-v3-turbo', 'cohere-transcribe-03-2026'] as $modelName) {
+            $model = $catalog->getModel($modelName);
 
-        self::assertTrue($model->supports(Capability::SPEECH_TO_TEXT));
-        self::assertTrue($model->supports(Capability::INPUT_AUDIO));
+            self::assertTrue($model->supports(Capability::SPEECH_TO_TEXT), $modelName);
+            self::assertTrue($model->supports(Capability::INPUT_AUDIO), $modelName);
+        }
     }
 
     public function testUnknownModelThrowsModelNotFoundException(): void

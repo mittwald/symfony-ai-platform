@@ -2,6 +2,7 @@
 
 namespace Mittwald\Symfony\AI\Platform\Bridge\Tests\Integration;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\AI\Platform\Result\TextResult;
 
@@ -13,12 +14,22 @@ final class WhisperIntegrationTest extends AbstractIntegrationTestCase
      * verifies the request/response round-trip (multipart upload, auth,
      * response parsing) rather than transcription accuracy.
      */
-    public function testTranscribeReturnsTextResult(): void
+    #[DataProvider('transcriptionModelsProvider')]
+    public function testTranscribeReturnsTextResult(string $modelName): void
     {
         $platform = $this->createPlatform();
 
-        $result = $platform->invoke('whisper-large-v3-turbo', __DIR__.'/fixtures/sample.wav')->getResult();
+        $result = $platform->invoke($modelName, __DIR__.'/fixtures/sample.wav')->getResult();
 
         self::assertInstanceOf(TextResult::class, $result);
+    }
+
+    /**
+     * @return iterable<string, string[]>
+     */
+    public static function transcriptionModelsProvider(): iterable
+    {
+        yield 'whisper-large-v3-turbo' => ['whisper-large-v3-turbo'];
+        yield 'cohere-transcribe-03-2026' => ['cohere-transcribe-03-2026'];
     }
 }
