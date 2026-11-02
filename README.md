@@ -219,6 +219,7 @@ documentation is the authoritative list of what the API currently serves.
 | `GLM-OCR` | Text, Image, PDF |
 | `Qwen3-Embedding-8B` | Embeddings |
 | `whisper-large-v3-turbo` | Speech-to-Text |
+| `cohere-transcribe-03-2026` | Speech-to-Text |
 | `Qwen3-VL-Reranker-2B` | Text, Image, Reranking |
 | `Qwen3-TTS-12Hz-1.7B-CustomVoice` | Text-to-Speech |
 

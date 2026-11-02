@@ -11,7 +11,8 @@
     "mistral",
     "qwen3",
     "whisper",
-    "glm"
+    "glm",
+    "cohere"
   ],
   "homepage": "https://github.com/mittwald/symfony-ai-platform",
   "autoload": {
