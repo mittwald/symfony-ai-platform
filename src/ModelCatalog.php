@@ -106,6 +106,13 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::SPEECH_TO_TEXT,
                 ],
             ],
+            'cohere-transcribe-03-2026' => [
+                'class' => WhisperModel::class,
+                'capabilities' => [
+                    Capability::INPUT_AUDIO,
+                    Capability::SPEECH_TO_TEXT,
+                ],
+            ],
             'Qwen3-VL-Reranker-2B' => [
                 'class' => RerankModel::class,
                 'capabilities' => [
