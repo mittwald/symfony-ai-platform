@@ -13,8 +13,8 @@ provider into that API.
 
 This package is the bridge for
 [**mittwald AI Hosting**](https://developer.mittwald.de/docs/v2/platform/aihosting/introduction/),
-which serves models such as GPT-OSS, Qwen, Ministral, Whisper and GLM over an
-OpenAI-compatible API. Installing it lets you:
+which serves models such as GPT-OSS, Qwen, Ministral, Whisper, Cohere and GLM
+over an OpenAI-compatible API. Installing it lets you:
 
 - **Use mittwald-hosted models through the standard Symfony AI interfaces** —
   for chat and embeddings, the same code that talks to the OpenAI or Anthropic
@@ -183,6 +183,16 @@ $result = $platform->invoke('whisper-large-v3-turbo', '/path/to/audio.mp3');
 echo $result->asText();
 ```
 
+`cohere-transcribe-03-2026` is invoked the same way and additionally supports
+the `srt`, `vtt`, `verbose_json` and `diarized_json` response formats (speaker
+separation, word timestamps) via the `response_format` option:
+
+```php
+$result = $platform->invoke('cohere-transcribe-03-2026', '/path/to/audio.mp3', [
+    'response_format' => 'diarized_json',
+]);
+```
+
 ### Reranking
 
 ```php
@@ -219,6 +229,7 @@ documentation is the authoritative list of what the API currently serves.
 | `GLM-OCR` | Text, Image, PDF |
 | `Qwen3-Embedding-8B` | Embeddings |
 | `whisper-large-v3-turbo` | Speech-to-Text |
+| `cohere-transcribe-03-2026` | Speech-to-Text |
 | `Qwen3-VL-Reranker-2B` | Text, Image, Reranking |
 | `Qwen3-TTS-12Hz-1.7B-CustomVoice` | Text-to-Speech |
 
