@@ -21,4 +21,19 @@ final class WhisperIntegrationTest extends AbstractIntegrationTestCase
 
         self::assertInstanceOf(TextResult::class, $result);
     }
+
+    /**
+     * cohere-transcribe-03-2026 serves the same /v1/audio/transcriptions
+     * endpoint as whisper-large-v3-turbo. The fixture is a tone, not speech,
+     * so this only verifies the round-trip; cohere-transcribe answers an
+     * empty transcript for audio without speech.
+     */
+    public function testCohereTranscribeReturnsTextResult(): void
+    {
+        $platform = $this->createPlatform();
+
+        $result = $platform->invoke('cohere-transcribe-03-2026', __DIR__.'/fixtures/sample.wav')->getResult();
+
+        self::assertInstanceOf(TextResult::class, $result);
+    }
 }

@@ -216,9 +216,12 @@ documentation is the authoritative list of what the API currently serves.
 | `Qwen3.6-35B-A3B-FP8` | Text, Image, Tool Calling, Streaming, Reasoning |
 | `Qwen3.5-0.8B` | Text, Tool Calling, Streaming, Reasoning |
 | `Qwen3.8-27B-NVFP4` | Text, Image, Tool Calling, Reasoning, Streaming |
+| `Kolibri-1` | Text, Tool Calling, Streaming, Reasoning |
+| `DeepSeek-V4.1-Flash-1017` | Text, Image, Tool Calling, Streaming, Reasoning |
 | `GLM-OCR` | Text, Image, PDF |
 | `Qwen3-Embedding-8B` | Embeddings |
 | `whisper-large-v3-turbo` | Speech-to-Text |
+| `cohere-transcribe-03-2026` | Speech-to-Text |
 | `Qwen3-VL-Reranker-2B` | Text, Image, Reranking |
 | `Qwen3-TTS-12Hz-1.7B-CustomVoice` | Text-to-Speech |
 
