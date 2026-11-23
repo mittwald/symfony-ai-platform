@@ -82,6 +82,29 @@ final class ModelCatalog extends AbstractModelCatalog
                     Capability::THINKING,
                 ],
             ],
+            'Kolibri-1' => [
+                'class' => ChatModel::class,
+                'capabilities' => [
+                    Capability::INPUT_MESSAGES,
+                    Capability::INPUT_TEXT,
+                    Capability::OUTPUT_TEXT,
+                    Capability::OUTPUT_STREAMING,
+                    Capability::TOOL_CALLING,
+                    Capability::THINKING,
+                ],
+            ],
+            'DeepSeek-V4.1-Flash-1017' => [
+                'class' => ChatModel::class,
+                'capabilities' => [
+                    Capability::INPUT_MESSAGES,
+                    Capability::INPUT_TEXT,
+                    Capability::INPUT_IMAGE,
+                    Capability::OUTPUT_TEXT,
+                    Capability::OUTPUT_STREAMING,
+                    Capability::TOOL_CALLING,
+                    Capability::THINKING,
+                ],
+            ],
             'GLM-OCR' => [
                 'class' => ChatModel::class,
                 'capabilities' => [
@@ -100,6 +123,13 @@ final class ModelCatalog extends AbstractModelCatalog
                 ],
             ],
             'whisper-large-v3-turbo' => [
+                'class' => WhisperModel::class,
+                'capabilities' => [
+                    Capability::INPUT_AUDIO,
+                    Capability::SPEECH_TO_TEXT,
+                ],
+            ],
+            'cohere-transcribe-03-2026' => [
                 'class' => WhisperModel::class,
                 'capabilities' => [
                     Capability::INPUT_AUDIO,

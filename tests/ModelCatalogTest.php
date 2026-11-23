@@ -26,9 +26,12 @@ final class ModelCatalogTest extends TestCase
         yield 'Qwen3.6-35B-A3B-FP8' => ['Qwen3.6-35B-A3B-FP8', ChatModel::class];
         yield 'Qwen3.5-0.8B' => ['Qwen3.5-0.8B', ChatModel::class];
         yield 'Qwen3.8-27B-NVFP4' => ['Qwen3.8-27B-NVFP4', ChatModel::class];
+        yield 'Kolibri-1' => ['Kolibri-1', ChatModel::class];
+        yield 'DeepSeek-V4.1-Flash-1017' => ['DeepSeek-V4.1-Flash-1017', ChatModel::class];
         yield 'GLM-OCR' => ['GLM-OCR', ChatModel::class];
         yield 'Qwen3-Embedding-8B' => ['Qwen3-Embedding-8B', EmbeddingModel::class];
         yield 'whisper-large-v3-turbo' => ['whisper-large-v3-turbo', WhisperModel::class];
+        yield 'cohere-transcribe-03-2026' => ['cohere-transcribe-03-2026', WhisperModel::class];
         yield 'Qwen3-VL-Reranker-2B' => ['Qwen3-VL-Reranker-2B', RerankModel::class];
         yield 'Qwen3-TTS-12Hz-1.7B-CustomVoice' => ['Qwen3-TTS-12Hz-1.7B-CustomVoice', TextToSpeechModel::class];
     }
@@ -79,6 +82,46 @@ final class ModelCatalogTest extends TestCase
 
         self::assertTrue($catalog->getModel('Qwen3.5-122B-A10B-FP8')->supports(Capability::THINKING));
         self::assertTrue($catalog->getModel('gpt-oss-120b')->supports(Capability::THINKING));
+    }
+
+    public function testKolibri1IsATextOnlyThinkingChatModel(): void
+    {
+        $catalog = new ModelCatalog();
+
+        $model = $catalog->getModel('Kolibri-1');
+
+        self::assertTrue($model->supports(Capability::INPUT_MESSAGES));
+        self::assertTrue($model->supports(Capability::INPUT_TEXT));
+        self::assertTrue($model->supports(Capability::OUTPUT_TEXT));
+        self::assertTrue($model->supports(Capability::OUTPUT_STREAMING));
+        self::assertTrue($model->supports(Capability::TOOL_CALLING));
+        self::assertTrue($model->supports(Capability::THINKING));
+        self::assertFalse($model->supports(Capability::INPUT_IMAGE));
+    }
+
+    public function testDeepSeekV41Flash1017IsAVisionThinkingChatModel(): void
+    {
+        $catalog = new ModelCatalog();
+
+        $model = $catalog->getModel('DeepSeek-V4.1-Flash-1017');
+
+        self::assertTrue($model->supports(Capability::INPUT_MESSAGES));
+        self::assertTrue($model->supports(Capability::INPUT_TEXT));
+        self::assertTrue($model->supports(Capability::INPUT_IMAGE));
+        self::assertTrue($model->supports(Capability::OUTPUT_TEXT));
+        self::assertTrue($model->supports(Capability::OUTPUT_STREAMING));
+        self::assertTrue($model->supports(Capability::TOOL_CALLING));
+        self::assertTrue($model->supports(Capability::THINKING));
+    }
+
+    public function testCohereTranscribeSupportsSpeechToTextCapability(): void
+    {
+        $catalog = new ModelCatalog();
+
+        $model = $catalog->getModel('cohere-transcribe-03-2026');
+
+        self::assertTrue($model->supports(Capability::SPEECH_TO_TEXT));
+        self::assertTrue($model->supports(Capability::INPUT_AUDIO));
     }
 
     public function testGlmOcrSupportsPdfInput(): void

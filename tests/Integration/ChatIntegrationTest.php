@@ -27,6 +27,40 @@ final class ChatIntegrationTest extends AbstractIntegrationTestCase
         self::assertNotSame('', trim($result->getContent()));
     }
 
+    public function testKolibriChatCompletionReturnsText(): void
+    {
+        $platform = $this->createPlatform();
+
+        $result = $platform->invoke(
+            'Kolibri-1',
+            new MessageBag(Message::ofUser('Reply with exactly one word: pong')),
+            // Kolibri-1 thinks by default at the highest reasoning depth and
+            // can return an empty answer if max_tokens is consumed by hidden
+            // reasoning tokens, so turn thinking off and keep a small budget.
+            ['max_tokens' => 1024, 'chat_template_kwargs' => ['reasoning_effort' => 'none']],
+        )->getResult();
+
+        self::assertInstanceOf(TextResult::class, $result);
+        self::assertNotSame('', trim($result->getContent()));
+    }
+
+    public function testDeepSeekChatCompletionReturnsText(): void
+    {
+        $platform = $this->createPlatform();
+
+        $result = $platform->invoke(
+            'DeepSeek-V4.1-Flash-1017',
+            new MessageBag(Message::ofUser('Reply with exactly one word: pong')),
+            // DeepSeek-V4.1-Flash-1017 thinks by default; a small budget can
+            // be entirely consumed by hidden reasoning tokens, so turn
+            // thinking off and keep the budget small.
+            ['max_tokens' => 1024, 'chat_template_kwargs' => ['reasoning_effort' => 'none']],
+        )->getResult();
+
+        self::assertInstanceOf(TextResult::class, $result);
+        self::assertNotSame('', trim($result->getContent()));
+    }
+
     public function testStreamingChatCompletionYieldsTextDeltas(): void
     {
         $platform = $this->createPlatform();
